@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Performance Insights — Uber for Business</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --green:#06C167;--green-d:#049A52;--green-bg:rgba(6,193,103,.10);
+  --black:#000;--ink:#1a1a1a;--white:#fff;
+  --g70:#4d4d4d;--g50:#808080;--g30:#b3b3b3;--g15:#d9d9d9;--g07:#ebebeb;--g03:#f7f7f7;
+  --amber:#FF9500;--red:#E11900;--blue:#276EF1;--teal:#0B847F;
+  --r:8px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --sh-lg:0 8px 28px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06);
+  --font-h:'Syne',sans-serif;
+  --font-b:'DM Sans',sans-serif;
+}
+body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--black);height:52px;display:flex;align-items:stretch;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.topbar-inner{max-width:1360px;margin:0 auto;width:100%;display:flex;align-items:stretch}
+.tb-brand{display:flex;align-items:center;gap:12px;padding:0 24px;border-right:1px solid #222;flex-shrink:0}
+.tb-wordmark{font-family:var(--font-h);font-weight:800;font-size:19px;color:var(--white);letter-spacing:-.3px}
+.tb-sep{color:#444;font-size:17px}
+.tb-title{font-size:12.5px;font-weight:500;color:var(--g50)}
+.tb-nav{display:flex;align-items:center;padding:0 12px;gap:2px;flex:1;overflow-x:auto}
+.tb-nav a{font-size:11.5px;font-weight:500;color:var(--g50);text-decoration:none;padding:5px 11px;border-radius:4px;white-space:nowrap;transition:color .15s,background .15s}
+.tb-nav a:hover{color:var(--white);background:#1a1a1a}
+.tb-badge{display:flex;align-items:center;gap:7px;padding:0 20px;border-left:1px solid #222;flex-shrink:0}
+.tb-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.tb-badge span{font-size:11px;color:var(--g50);white-space:nowrap}
+
+/* ── LAYOUT ── */
+.page{max-width:1360px;margin:0 auto;padding:28px 20px 80px}
+
+/* ── HERO / SLIDE REPLICA ── */
+.slide{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  background:var(--white);
+  border-radius:var(--r);
+  overflow:hidden;
+  box-shadow:var(--sh-lg);
+  border:1px solid var(--g15);
+  margin-bottom:28px;
+}
+
+/* Sidebar */
+.slide-sidebar{
+  background:var(--black);
+  padding:32px 24px 28px;
+  display:flex;flex-direction:column;gap:0;
+}
+.ss-title{
+  font-family:var(--font-h);font-size:24px;font-weight:800;
+  color:var(--white);line-height:1.15;letter-spacing:-.5px;
+  margin-bottom:14px;
+}
+.ss-rule{width:52px;height:3px;background:var(--green);border-radius:2px;margin-bottom:28px}
+.ss-kpi{background:#111;padding:14px 16px;margin-bottom:10px;border-left:3px solid var(--green)}
+.ss-kpi:last-child{margin-bottom:0}
+.ss-val{font-family:var(--font-h);font-size:26px;font-weight:800;color:var(--green);letter-spacing:-1px;line-height:1;margin-bottom:5px}
+.ss-label{font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px}
+.ss-sub{font-size:11px;color:var(--g50)}
+
+/* Main area */
+.slide-main{display:flex;flex-direction:column}
+.slide-header{
+  padding:24px 28px 16px;
+  border-bottom:1px solid var(--g07);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+}
+.sh-left{}
+.sh-headline{font-family:var(--font-h);font-size:24px;font-weight:800;color:var(--black);line-height:1.2;letter-spacing:-.4px;margin-bottom:6px}
+.sh-meta{font-size:12px;color:var(--g50);display:flex;gap:12px;flex-wrap:wrap}
+.sh-meta span{display:flex;align-items:center;gap:5px}
+.sh-meta span::before{content:'';display:inline-block;width:1px;height:10px;background:var(--g15)}
+.sh-meta span:first-child::before{display:none}
+.sh-uber{font-family:var(--font-h);font-size:19px;font-weight:800;color:var(--black);line-height:1.1;text-align:right;flex-shrink:0}
+.sh-uber-sub{font-size:14px;font-weight:400;color:var(--g70)}
+
+/* Card grid */
+.card-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:0;flex:1;
+}
+.insight-card{
+  padding:18px 20px 16px;
+  border-right:1px solid var(--g07);
+  border-bottom:1px solid var(--g07);
+  display:flex;flex-direction:column;
+  cursor:pointer;
+  transition:background .15s;
+  position:relative;
+}
+.insight-card:hover{background:#fafafa}
+.insight-card:nth-child(3),.insight-card:nth-child(6){border-right:none}
+.insight-card:nth-child(4),.insight-card:nth-child(5),.insight-card:nth-child(6){border-bottom:none}
+
+/* Card tag row */
+.ic-tag-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ic-num{
+  font-size:10px;font-weight:800;
+  background:var(--green);color:var(--white);
+  padding:2px 6px;border-radius:2px;letter-spacing:.5px;
+}
+.ic-tag{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g50)}
+
+/* Card title */
+.ic-title{font-family:var(--font-h);font-size:14.5px;font-weight:700;color:var(--black);line-height:1.25;margin-bottom:8px}
+
+/* Card body text */
+.ic-body{font-size:12px;color:var(--g70);line-height:1.6;margin-bottom:10px;flex-shrink:0}
+.ic-body b{color:var(--black);font-weight:700}
+
+/* Chart area */
+.ic-chart{flex:1;min-height:110px;position:relative}
+
+/* Footer */
+.slide-footer{
+  padding:8px 28px;border-top:1px solid var(--g07);
+  font-size:10px;color:var(--g30);
+}
+
+/* ── DETAIL SECTIONS ── */
+.section-hd{margin:40px 0 18px;padding-bottom:12px;border-bottom:2px solid var(--g07)}
+.section-hd-label{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--green-d);margin-bottom:4px}
+.section-hd h2{font-family:var(--font-h);font-size:19px;font-weight:800;color:var(--black);letter-spacing:-.3px}
+.section-hd p{font-size:12.5px;color:var(--g50);margin-top:3px}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--g07);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.card-hd{padding:15px 18px 12px;border-bottom:1px solid var(--g07);display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.card-hd-title{font-family:var(--font-h);font-size:13.5px;font-weight:700;color:var(--black)}
+.card-hd-sub{font-size:11px;color:var(--g50);margin-top:2px}
+.card-body{padding:18px}
+.card-body.nopad{padding:0}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+.g31{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+.g13{display:grid;grid-template-columns:1fr 2fr;gap:18px}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl thead tr{background:var(--g03);border-bottom:2px solid var(--g07)}
+.tbl thead th{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--g50);padding:10px 13px;text-align:left;white-space:nowrap}
+.tbl tbody tr{border-bottom:1px solid var(--g07);transition:background .1s;cursor:pointer}
+.tbl tbody tr:hover{background:var(--g03)}
+.tbl tbody td{padding:10px 13px;color:var(--g70)}
+.td-bold{font-weight:600;color:var(--ink)}
+.td-g{color:var(--green-d);font-weight:700}
+.td-r{color:var(--red);font-weight:600}
+.td-a{color:#b36b00;font-weight:600}
+.td-mo{font-size:12px;letter-spacing:.1px}
+
+/* ── WIN RATE BAR ── */
+.wrb{display:flex;align-items:center;gap:7px;min-width:120px}
+.wrb-track{flex:1;height:5px;background:var(--g07);border-radius:3px}
+.wrb-fill{height:5px;border-radius:3px}
+.wrb-lbl{font-size:12px;font-weight:700;min-width:36px}
+
+/* ── TAG PILL ── */
+.tag{display:inline-flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:3px;flex-shrink:0}
+.tg{background:rgba(6,193,103,.12);color:var(--green-d)}
+.tr{background:#fdecea;color:var(--red)}
+.ta{background:#fff3e0;color:#b36b00}
+.tb2{background:#eef3fd;color:#1550bb}
+.tgr{background:var(--g07);color:var(--g70)}
+.ttl{background:#e5f4f4;color:var(--teal)}
+
+/* ── STAT PILLS ── */
+.sp-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 0}
+.sp{background:var(--g03);border:1px solid var(--g07);border-radius:6px;padding:10px 13px;flex:1;min-width:90px}
+.sp-val{font-family:var(--font-h);font-size:18px;font-weight:800;color:var(--black);letter-spacing:-.5px;line-height:1}
+.sp-lbl{font-size:10.5px;color:var(--g50);margin-top:3px}
+
+/* ── SEG BARS ── */
+.seg-wrap{margin:0 0 12px}
+.seg-row{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px}
+.seg-row b{color:var(--ink)}
+.seg-row span{color:var(--g50)}
+.seg-track{height:9px;background:var(--g07);border-radius:4px;overflow:hidden}
+.seg-fill{height:9px;border-radius:4px}
+
+/* ── FUNNEL ROWS ── */
+.f-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--g07)}
+.f-row:last-child{border:none}
+.f-stage{font-size:11.5px;font-weight:600;color:var(--ink);min-width:120px}
+.f-track{flex:1;height:26px;background:var(--g07);border-radius:3px;overflow:hidden;position:relative}
+.f-fill{height:26px;border-radius:3px;display:flex;align-items:center;padding:0 8px}
+.f-fill span{font-size:10.5px;font-weight:700;color:var(--white)}
+.f-meta{min-width:68px;text-align:right;font-size:11.5px;color:var(--g50)}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--r);padding:12px 16px;font-size:12.5px;line-height:1.65;display:flex;gap:10px;margin-top:14px;border:1px solid transparent}
+.callout p{color:var(--g70)}
+.callout strong{color:var(--ink)}
+.co-g{background:rgba(6,193,103,.08);border-color:rgba(6,193,103,.2)}
+.co-a{background:#fff8ec;border-color:#ffd580}
+.co-r{background:#fff4f2;border-color:#ffccc9}
+.co-i{background:#eef3fd;border-color:#c2d4fb}
+
+/* ── REC CARD ── */
+.rec{background:var(--white);border:1px solid var(--g07);border-radius:var(--r);padding:18px 20px;display:flex;gap:14px;box-shadow:var(--sh)}
+.rec-n{width:30px;height:30px;border-radius:50%;background:var(--black);color:var(--white);font-family:var(--font-h);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rec-h{font-family:var(--font-h);font-size:13.5px;font-weight:700;color:var(--black);margin-bottom:5px}
+.rec-p{font-size:12.5px;color:var(--g70);line-height:1.65}
+.rec-p b{color:var(--ink)}
+
+/* ── MODAL ── */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.mo.open{opacity:1;pointer-events:all}
+.mo-box{background:var(--white);border-radius:12px;box-shadow:var(--sh-lg);width:min(700px,93vw);max-height:87vh;overflow-y:auto;transform:translateY(14px);transition:transform .2s;position:relative}
+.mo.open .mo-box{transform:translateY(0)}
+.mo-hd{padding:22px 26px 16px;border-bottom:1px solid var(--g07);display:flex;align-items:flex-start;justify-content:space-between;gap:14px;position:sticky;top:0;background:var(--white);z-index:1}
+.mo-hd h2{font-family:var(--font-h);font-size:17px;font-weight:800;color:var(--black);line-height:1.2}
+.mo-close{background:none;border:none;cursor:pointer;font-size:19px;color:var(--g50);padding:4px;border-radius:4px;transition:background .1s}
+.mo-close:hover{background:var(--g07)}
+.mo-body{padding:22px 26px 26px}
+.mo-body h3{font-family:var(--font-h);font-size:13px;font-weight:700;color:var(--black);margin:18px 0 8px}
+.mo-body h3:first-child{margin-top:0}
+.mo-body p{font-size:13px;color:var(--g70);line-height:1.7;margin-bottom:9px}
+.mo-body ul{padding-left:17px;margin-bottom:10px}
+.mo-body li{font-size:13px;color:var(--g70);line-height:1.7;margin-bottom:4px}
+.mo-body strong{color:var(--ink)}
+.mo-chart{height:200px;position:relative;margin:14px 0}
+
+/* ── CHART WRAP ── */
+.ch-wrap{position:relative;padding:14px}
+.ch-wrap canvas{width:100%!important}
+
+/* ── ANIM ── */
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fu .4s ease both}
+.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}
+
+/* ── FOOTER ── */
+footer{background:var(--black);color:var(--g70);padding:24px;font-size:11.5px;text-align:center;margin-top:56px}
+footer strong{color:var(--g30)}
+
+@media(max-width:900px){
+  .slide{grid-template-columns:1fr}
+  .card-grid{grid-template-columns:1fr}
+  .g2,.g3,.g31,.g13{grid-template-columns:1fr}
+  .tb-nav{display:none}
+  .insight-card{border-right:none!important}
+  .insight-card:nth-child(1),.insight-card:nth-child(2),.insight-card:nth-child(3),.insight-card:nth-child(4),.insight-card:nth-child(5){border-bottom:1px solid var(--g07)!important}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="tb-brand">
+      <span class="tb-wordmark">Uber</span>
+      <span class="tb-sep">/</span>
+      <span class="tb-title">Marketing Performance</span>
+    </div>
+    <nav class="tb-nav">
+      <a href="#overview">Overview</a>
+      <a href="#channels">Channels</a>
+      <a href="#segments">Segments</a>
+      <a href="#regions">Regions</a>
+      <a href="#funnel">Funnel</a>
+      <a href="#products">Products</a>
+      <a href="#recs">Recommendations</a>
+    </nav>
+    <div class="tb-badge">
+      <div class="tb-dot"></div>
+      <span>425 Opportunities &middot; 2025 H1 &amp; H2</span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+<!-- ══ SLIDE REPLICA ══ -->
+<section id="overview">
+<div class="slide fu">
+
+  <!-- Sidebar -->
+  <div class="slide-sidebar">
+    <div class="ss-title">MARKETING<br>PERFORMANCE<br>INSIGHTS</div>
+    <div class="ss-rule"></div>
+    <div class="ss-kpi">
+      <div class="ss-val">425</div>
+      <div class="ss-label">Total Opportunities</div>
+      <div class="ss-sub">across all stages &amp; segments</div>
+    </div>
+    <div class="ss-kpi">
+      <div class="ss-val">$19.5M</div>
+      <div class="ss-label">Won ARR</div>
+      <div class="ss-sub">44% win rate by volume</div>
+    </div>
+    <div class="ss-kpi">
+      <div class="ss-val">$112.0M</div>
+      <div class="ss-label">Active Pipeline</div>
+      <div class="ss-sub">5.7x coverage vs. remaining target</div>
+    </div>
+    <div class="ss-kpi">
+      <div class="ss-val">$348K</div>
+      <div class="ss-label">Avg. Won Deal Size</div>
+      <div class="ss-sub">recurring: $323K &nbsp;|&nbsp; non-rec: $407K</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="slide-main">
+    <div class="slide-header">
+      <div class="sh-left">
+        <div class="sh-headline">Pipeline is Healthy; Segment Mix and Channel Waste Are Leaving Revenue Behind</div>
+        <div class="sh-meta">
+          <span>Based on 425 opportunities</span>
+          <span>2025 H1 &amp; H2</span>
+          <span>8 Channels</span>
+          <span>4 Regions</span>
+          <span>5 Products</span>
+        </div>
+      </div>
+      <div class="sh-uber">Uber<br><span class="sh-uber-sub">for Business</span></div>
+    </div>
+
+    <div class="card-grid">
+
+      <!-- Card 01 -->
+      <div class="insight-card" onclick="openModal('m1')">
+        <div class="ic-tag-row">
+          <div class="ic-num">01</div>
+          <div class="ic-tag">OPTIMIZE</div>
+        </div>
+        <div class="ic-title">Channel Efficiency Gap Is Wide</div>
+        <div class="ic-body"><b>Paid Social</b> closes at 69%; <b>Email Nurture</b> at 22% on nearly identical volume. <b>Paid Search</b> generates $74K won ARR per opp vs. $31K for <b>Email Nurture</b>. Move budget out of Email Nurture and into Paid Search and Paid Social.</div>
+        <div class="ic-chart"><canvas id="c1"></canvas></div>
+      </div>
+
+      <!-- Card 02 -->
+      <div class="insight-card" onclick="openModal('m2')">
+        <div class="ic-tag-row">
+          <div class="ic-num">02</div>
+          <div class="ic-tag">ADDRESS</div>
+        </div>
+        <div class="ic-title">Big Segment Severely Underpenetrated</div>
+        <div class="ic-body"><b>Big accounts</b> have the highest win rate (50%) but only 6% of the $100M target won. Pipeline coverage is 0.40x vs. 1.73x for <b>Small</b>. This is a sourcing problem, not a closing problem. <b>Big needs a dedicated ABM motion.</b></div>
+        <div class="ic-chart"><canvas id="c2"></canvas></div>
+      </div>
+
+      <!-- Card 03 -->
+      <div class="insight-card" onclick="openModal('m3')">
+        <div class="ic-tag-row">
+          <div class="ic-num">03</div>
+          <div class="ic-tag">DIAGNOSE</div>
+        </div>
+        <div class="ic-title">South Region Losing at Highest Rate</div>
+        <div class="ic-body"><b>South</b> leads all regions in volume (130 opps) but wins at only 36%, 31 points below <b>Central</b> (67%). Email Nurture alone drives 7 of South's 29 losses. <b>Central</b> runs on Partner Marketing and Paid Social. South needs that channel mix — the pipeline is the problem, not the reps.</div>
+        <div class="ic-chart"><canvas id="c3"></canvas></div>
+      </div>
+
+      <!-- Card 04 -->
+      <div class="insight-card" onclick="openModal('m4')">
+        <div class="ic-tag-row">
+          <div class="ic-num">04</div>
+          <div class="ic-tag">TEST</div>
+        </div>
+        <div class="ic-title">Webinars: Volume Without Conversion</div>
+        <div class="ic-body"><b>Webinars</b> produce the most opps (69) but close at only 36%. <b>Paid Search</b> generates 2.4x more won ARR per opp. Deals that do close from <b>Webinars</b> average $392K, so deal size is not the issue. Lead readiness is. <b>Add a qualification gate to registration.</b></div>
+        <div class="ic-chart"><canvas id="c4"></canvas></div>
+      </div>
+
+      <!-- Card 05 -->
+      <div class="insight-card" onclick="openModal('m5')">
+        <div class="ic-tag-row">
+          <div class="ic-num">05</div>
+          <div class="ic-tag">PROTECT</div>
+        </div>
+        <div class="ic-title">Late-Stage Pipeline Is Strong — Act Now</div>
+        <div class="ic-body">$47M sits in <b>Stages 4 and 5</b>, 42% of total pipeline. At the current 44% win rate, that projects to roughly <b>$21M closed won</b>. <b>Average deal cycles run 353 days</b>, putting this cohort at peak slip risk now. Top 20 deals by ARR need exec sponsorship and weekly review.</div>
+        <div class="ic-chart"><canvas id="c5"></canvas></div>
+      </div>
+
+      <!-- Card 06 -->
+      <div class="insight-card" onclick="openModal('m6')">
+        <div class="ic-tag-row">
+          <div class="ic-num">06</div>
+          <div class="ic-tag">SCALE</div>
+        </div>
+        <div class="ic-title">Recurring Revenue Is a Win-Rate Lever</div>
+        <div class="ic-body"><b>Recurring</b> deals close at 46% vs. 40% for <b>non-recurring</b>, and account for 65% of all won ARR. The pattern holds across all segments. Buyers who agree to <b>recurring</b> terms have already made a longer commitment. <b>Make recurring the default framing at discovery.</b></div>
+        <div class="ic-chart"><canvas id="c6"></canvas></div>
+      </div>
+
+    </div><!-- /card-grid -->
+
+    <div class="slide-footer">Win Rate = Won &divide; (Won + Lost). Efficiency = Won ARR &divide; Total Opps Generated. Segment targets per provided legend.</div>
+  </div><!-- /slide-main -->
+</div><!-- /slide -->
+</section>
+
+<!-- ══ CHANNELS ══ -->
+<section id="channels">
+  <div class="section-hd fu">
+    <div class="section-hd-label">Channel Analysis</div>
+    <h2>All 8 Channels — Win Rate, Efficiency &amp; Volume</h2>
+    <p>Sorted by win rate. Click any row for a full breakdown.</p>
+  </div>
+  <div class="g31 fu d1">
+    <div class="card">
+      <div class="card-hd"><div><div class="card-hd-title">Win Rate by Channel</div><div class="card-hd-sub">With ARR/opp efficiency overlay</div></div></div>
+      <div class="card-body nopad"><div class="ch-wrap" style="height:270px"><canvas id="chMain"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-hd-title">Won ARR Share</div></div>
+      <div class="card-body nopad"><div class="ch-wrap" style="height:270px"><canvas id="chPie"></canvas></div></div>
+    </div>
+  </div>
+  <div class="card fu d2" style="margin-top:18px">
+    <div class="card-hd"><div class="card-hd-title">Full Channel Breakdown</div></div>
+    <div class="card-body nopad">
+      <table class="tbl">
+        <thead><tr><th>Channel</th><th>Total</th><th>Won</th><th>Lost</th><th>Win Rate</th><th>Won ARR</th><th>Avg Won</th><th>ARR/Opp</th><th>Signal</th></tr></thead>
+        <tbody id="chTbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="callout co-a fu d3">
+    <span>⚠️</span>
+    <p><strong>Attribution note:</strong> Each opportunity carries a single lead source. Real B2B journeys involve multiple touchpoints. Win rate differences at n&lt;15 closed deals (Organic, Content Syndication) are directional, not statistically conclusive.</p>
+  </div>
+</section>
+
+<!-- ══ SEGMENTS ══ -->
+<section id="segments">
+  <div class="section-hd fu">
+    <div class="section-hd-label">Segment Analysis</div>
+    <h2>Target Attainment — Small &middot; Medium &middot; Big</h2>
+  </div>
+  <div class="g3 fu d1" id="segCards"></div>
+  <div class="card fu d2" style="margin-top:18px">
+    <div class="card-hd"><div class="card-hd-title">ARR Attainment vs. Target</div><div class="card-hd-sub">Won ARR stacked against remaining gap</div></div>
+    <div class="card-body nopad"><div class="ch-wrap" style="height:230px"><canvas id="segChart"></canvas></div></div>
+  </div>
+  <div class="callout co-r fu d3">
+    <span>🚨</span>
+    <p><strong>Big segment math:</strong> Big's 50% win rate is the best in the dataset. The problem is sourcing: to hit $100M at 50% you need $200M in Big pipeline. Current Big pipeline is $37.7M — 20% of what is required. No improvement in close rate fixes a sourcing gap this large.</p>
+  </div>
+</section>
+
+<!-- ══ REGIONS ══ -->
+<section id="regions">
+  <div class="section-hd fu">
+    <div class="section-hd-label">Regional Analysis</div>
+    <h2>Win Rates &amp; Volume Across 4 Regions</h2>
+  </div>
+  <div class="g13 fu d1">
+    <div class="card">
+      <div class="card-hd"><div class="card-hd-title">Win Rate by Region</div></div>
+      <div class="card-body nopad"><div class="ch-wrap" style="height:230px"><canvas id="regChart"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-hd-title">Region Detail</div><div class="card-hd-sub">Click row for channel breakdown</div></div>
+      <div class="card-body nopad">
+        <table class="tbl"><thead><tr><th>Region</th><th>Opps</th><th>Won</th><th>Lost</th><th>Win Rate</th><th>Won ARR</th><th>Avg Won</th><th></th></tr></thead>
+        <tbody id="regTbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-i fu d2">
+    <span>💡</span>
+    <p><strong>Central is the playbook.</strong> Central's top channels are Partner Marketing and Paid Social — both high-converting. South's top channels are Email Nurture and Content Syndication. Replicating Central's channel mix in South is the most evidence-backed GTM fix in the data. South's average won deal ($419K) is the highest of all regions. The team can close; give them better pipeline.</p>
+  </div>
+</section>
+
+<!-- ══ FUNNEL ══ -->
+<section id="funnel">
+  <div class="section-hd fu">
+    <div class="section-hd-label">Funnel Health</div>
+    <h2>Active Pipeline by Stage</h2>
+    <p>$112.0M across 298 open opportunities</p>
+  </div>
+  <div class="g2 fu d1">
+    <div class="card">
+      <div class="card-hd"><div class="card-hd-title">Pipeline ARR by Stage</div><div class="card-hd-sub">Stages 4–5 highlighted</div></div>
+      <div class="card-body nopad"><div class="ch-wrap" style="height:230px"><canvas id="funChart"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-hd-title">Stage Breakdown</div></div>
+      <div class="card-body" style="padding:14px 18px" id="funRows"></div>
+    </div>
+  </div>
+  <div class="callout co-g fu d2" style="margin-top:18px">
+    <span>✅</span>
+    <p><strong>Funnel shape is healthy.</strong> Stage volume runs 51–71 opps at every level with no dramatic drop-off at any single transition. There is no one leaky stage to fix. The sourcing and channel mix problems are upstream — solving those improves funnel quality automatically.</p>
+  </div>
+</section>
+
+<!-- ══ PRODUCTS ══ -->
+<section id="products">
+  <div class="section-hd fu">
+    <div class="section-hd-label">Product Analysis</div>
+    <h2>Win Rate &amp; Revenue by Product Category</h2>
+  </div>
+  <div class="g2 fu d1">
+    <div class="card">
+      <div class="card-hd"><div class="card-hd-title">Win Rate by Product</div></div>
+      <div class="card-body nopad"><div class="ch-wrap" style="height:230px"><canvas id="prodWR"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-hd-title">Won ARR by Product</div></div>
+      <div class="card-body nopad"><div class="ch-wrap" style="height:230px"><canvas id="prodARR"></canvas></div></div>
+    </div>
+  </div>
+  <div class="callout co-a fu d2" style="margin-top:18px">
+    <span>⚠️</span>
+    <p><strong>Core Platform anomaly.</strong> Core Platform has the most total opportunities (90) but the lowest win rate (33%) and 16 losses — tied for the most. A flagship entry-point product should lead on conversion. Loss reason data in Salesforce would explain whether this is a competitive, qualification, or messaging problem.</p>
+  </div>
+</section>
+
+<!-- ══ RECOMMENDATIONS ══ -->
+<section id="recs">
+  <div class="section-hd fu">
+    <div class="section-hd-label">Recommendations</div>
+    <h2>4 Prioritized Actions with Evidence</h2>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px" class="fu d1">
+    <div class="rec">
+      <div class="rec-n">1</div>
+      <div>
+        <div class="rec-h">Launch a Big-Segment ABM Motion</div>
+        <p class="rec-p"><b>Evidence:</b> Big win rate = 50%, best in dataset. Big pipeline coverage = 0.40x. At 50% you need $200M of Big pipeline to make the $100M target. You have $37.7M. Paid Search and Paid Social both achieve 80% win rate on Big deals.<br>
+        <b>Action:</b> Identify top 25 Big ICP accounts. Run Paid Search and Paid Social campaigns targeting those accounts. Assign dedicated AEs. Set a quarterly Big pipeline creation KPI of $20–25M.<br>
+        <b>Metric:</b> New Big pipeline created per month.</p>
+        <div style="margin-top:8px"><span class="tag tr">HIGH IMPACT</span></div>
+      </div>
+    </div>
+    <div class="rec">
+      <div class="rec-n">2</div>
+      <div>
+        <div class="rec-h">Reallocate 20–30% of Email Nurture Budget to Paid Search and Paid Social</div>
+        <p class="rec-p"><b>Evidence:</b> Email Nurture generates $31K won ARR per opp vs. $74K for Paid Search. Email Nurture has 14 losses — most of any channel — with 4 wins. Moving 10 opps worth of investment to Paid Search yields roughly $430K more won ARR per cycle.<br>
+        <b>Action:</b> Reduce Email Nurture send frequency. Suppress lowest-engagement cohorts. Redirect paid budget to Paid Search and Paid Social with Big-segment targeting.<br>
+        <b>Metric:</b> Channel-level ARR per opp, tracked monthly. Evaluate 90 days post-reallocation.</p>
+        <div style="margin-top:8px"><span class="tag ta">MEDIUM-HIGH IMPACT</span></div>
+      </div>
+    </div>
+    <div class="rec">
+      <div class="rec-n">3</div>
+      <div>
+        <div class="rec-h">A/B Test a Webinar Pre-Registration Qualification Gate</div>
+        <p class="rec-p"><b>Evidence:</b> Webinars: 69 opps, 36% win rate, 14 losses. Average won Webinar deal is $392K — the issue is lead readiness, not deal size. A 3-question intent screen (role, company size, use case) would likely reduce registrations 20–30% but lift pipeline quality 10–15 points.<br>
+        <b>Action:</b> Run 2 gated vs. 2 ungated webinars over one quarter. Measure Stage 3+ progression rate within 60 days as the primary signal (faster than win rate).<br>
+        <b>Metric:</b> Stage 3+ progression rate by cohort.</p>
+        <div style="margin-top:8px"><span class="tag tb2">MEDIUM IMPACT &middot; TESTABLE</span></div>
+      </div>
+    </div>
+    <div class="rec">
+      <div class="rec-n">4</div>
+      <div>
+        <div class="rec-h">Assign Exec Sponsorship to Top 20 Stage 4–5 Deals</div>
+        <p class="rec-p"><b>Evidence:</b> $47M sits in Stages 4–5. Top 20 active deals by ARR represent ~$14.4M. Average deal cycle is 353 days — this cohort is at peak slip risk. A 10% improvement in Stage 4–5 close rate adds ~$4.7M to closed won.<br>
+        <b>Action:</b> Pull Stage 4–5 deals over $400K from Salesforce. Assign an exec sponsor to each. Run weekly deal reviews. Fast-track legal and procurement support where applicable.<br>
+        <b>Metric:</b> Stage 4–5 close rate and deal slippage rate vs. historical. 60–90 day window.</p>
+        <div style="margin-top:8px"><span class="tag ttl">HIGH IMPACT &middot; NEAR-TERM</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ METHODOLOGY ══ -->
+<section id="methodology" style="padding-top:40px">
+  <div class="section-hd fu">
+    <div class="section-hd-label">Methodology</div>
+    <h2>Definitions, Assumptions &amp; Caveats</h2>
+  </div>
+  <div class="g2 fu d1">
+    <div class="card">
+      <div class="card-hd"><div class="card-hd-title">Key Definitions</div></div>
+      <div class="card-body">
+        <p style="font-size:12.5px;color:var(--g70);margin-bottom:10px"><strong style="color:var(--ink)">Win Rate:</strong> Won &divide; (Won + Lost). Active pipeline excluded. Standard CRM definition — most accurate read on completed sales cycles.</p>
+        <p style="font-size:12.5px;color:var(--g70);margin-bottom:10px"><strong style="color:var(--ink)">ARR Efficiency:</strong> Won ARR &divide; Total Opps Generated by channel, including active and lost. Captures the true cost of pipeline generation, not just closed deals.</p>
+        <p style="font-size:12.5px;color:var(--g70);margin-bottom:10px"><strong style="color:var(--ink)">Pipeline Coverage:</strong> Active Pipeline ARR &divide; Remaining ARR to Target. 3x is the healthy B2B SaaS benchmark. Below 1x is structurally insufficient.</p>
+        <p style="font-size:12.5px;color:var(--g70)"><strong style="color:var(--ink)">Deal Cycle:</strong> Created Date to Close Date. Won = actual. Active = projected. Overall average: 353 days.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="card-hd-title">Important Caveats</div></div>
+      <div class="card-body">
+        <p style="font-size:12.5px;color:var(--g70);margin-bottom:9px">📊 <strong style="color:var(--ink)">Sample sizes:</strong> Channel win rates are based on 9–22 closed deals. Directional confidence is high for 40+ point gaps; formal significance requires 3–4x more observations.</p>
+        <p style="font-size:12.5px;color:var(--g70);margin-bottom:9px">🔗 <strong style="color:var(--ink)">Single-touch attribution:</strong> One lead source per opportunity. Multi-touch modeling would change channel rankings.</p>
+        <p style="font-size:12.5px;color:var(--g70);margin-bottom:9px">💰 <strong style="color:var(--ink)">No spend data:</strong> ARR per opp is a proxy for efficiency. True ROAS and CAC require budget data not in this dataset.</p>
+        <p style="font-size:12.5px;color:var(--g70)">🧪 <strong style="color:var(--ink)">Synthetic dataset:</strong> Directionally realistic by design. Real-world data would include missing values, duplicate opportunities, and multi-year history.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>Marketing Performance Insights</strong> &middot; B2B Funnel Analysis &middot; 425 Opportunities &middot; 2025 H1 &amp; H2</p>
+  <p style="margin-top:5px">Synthetic dataset — no real company, customer, or employee data. Prepared by Sam Evans.</p>
+</footer>
+
+<!-- MODAL -->
+<div class="mo" id="moOverlay" onclick="closeMoOutside(event)">
+  <div class="mo-box" id="moBox">
+    <div class="mo-hd">
+      <h2 id="moTitle"></h2>
+      <button class="mo-close" onclick="closeMo()">✕</button>
+    </div>
+    <div class="mo-body" id="moBody"></div>
+  </div>
+</div>
+
+<script>
+/* ══ DATA ══ */
+const CH=[
+  {n:"Paid Social",  w:11,l:5, a:44,t:60, wr:68.8,arr:3116358,eff:51939,avg:283305},
+  {n:"Paid Search",  w:11,l:9, a:31,t:51, wr:55.0,arr:3762396,eff:73772,avg:342036},
+  {n:"Content Synd.",w:6, l:5, a:40,t:51, wr:54.5,arr:1933733,eff:37916,avg:322288},
+  {n:"Partner Mktg", w:7, l:7, a:39,t:53, wr:50.0,arr:2499078,eff:47152,avg:357011},
+  {n:"Organic/Direct",w:4,l:5, a:34,t:43, wr:44.4,arr:1799105,eff:41839,avg:449776},
+  {n:"Webinars",     w:8, l:14,a:47,t:69, wr:36.4,arr:3137420,eff:45469,avg:392177},
+  {n:"Live Events",  w:5, l:12,a:32,t:49, wr:29.4,arr:1741792,eff:35546,avg:348358},
+  {n:"Email Nurture",w:4, l:14,a:31,t:49, wr:22.2,arr:1505157,eff:30717,avg:376289}
+];
+const SEG=[
+  {n:"Small", wa:8312999, tgt:30e6,pipe:37542108,wr:45.1,cov:1.73,w:23,l:28,a:106},
+  {n:"Medium",wa:5222346, tgt:50e6,pipe:36768366,wr:38.6,cov:0.82,w:17,l:27,a:97},
+  {n:"Big",   wa:5959694, tgt:100e6,pipe:37685984,wr:50.0,cov:0.40,w:16,l:16,a:95}
+];
+const REG=[
+  {n:"Central",wa:3846227,wr:66.7,w:12,l:6, a:75,t:93, avg:320518,topch:"Partner Mktg, Paid Social",    loss:"Email Nurture (3)"},
+  {n:"North",  wa:4554520,wr:48.4,w:15,l:16,a:81,t:112,avg:303634,topch:"Webinars, Paid Social",        loss:"Webinars (5), Live Events (4)"},
+  {n:"West",   wa:4388640,wr:39.4,w:13,l:20,a:57,t:90, avg:337587,topch:"Live Events, Webinars",        loss:"Live Events (4), Paid Search (4)"},
+  {n:"South",  wa:6705652,wr:35.6,w:16,l:29,a:85,t:130,avg:419103,topch:"Content Synd., Email Nurture", loss:"Email Nurture (7), Webinars (5)"}
+];
+const FUN=[
+  {s:"Discovery",       o:60,arr:22021318},
+  {s:"Qualification",   o:59,arr:23232176},
+  {s:"Proposal/Quote",  o:51,arr:19591736},
+  {s:"Negotiation/Rev.",o:71,arr:25628614},
+  {s:"Final Decision",  o:57,arr:21522614}
+];
+const PROD=[
+  {n:"Analytics Add-On",   wr:53.6,arr:4795253,w:15,l:13,t:88,avg:319683},
+  {n:"Security Module",    wr:50.0,arr:5006997,w:16,l:16,t:92,avg:312937},
+  {n:"Collaboration Suite",wr:43.5,arr:3861493,w:10,l:13,t:84,avg:386149},
+  {n:"Integrations",       wr:35.0,arr:3051788,w:7, l:13,t:71,avg:435969},
+  {n:"Core Platform",      wr:33.3,arr:2779508,w:8, l:16,t:90,avg:347438}
+];
+
+/* ══ HELPERS ══ */
+const fmtS=n=>n>=1e6?'$'+(n/1e6).toFixed(1)+'M':'$'+(n/1e3).toFixed(0)+'K';
+const fmtF=n=>'$'+n.toLocaleString();
+const wc=r=>r>=55?'#06C167':r>=40?'#276EF1':r>=30?'#FF9500':'#E11900';
+const wTag=r=>r>=55?'tg':r>=40?'tb2':r>=30?'ta':'tr';
+const wLbl=r=>r>=55?'SCALE':r>=40?'MAINTAIN':r>=30?'OPTIMIZE':'DIAGNOSE';
+Chart.defaults.font.family="'DM Sans',sans-serif";
+Chart.defaults.color='#808080';
+Chart.defaults.plugins.legend.labels.boxWidth=12;
+
+const cOpts=(extra={})=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'#f0f0f0'},ticks:{font:{size:10}}}}, ...extra});
+
+/* ══ CARD MINI CHARTS ══ */
+// C1 — Channel win rate (horizontal bar, 6 key channels)
+new Chart(document.getElementById('c1'),{type:'bar',data:{
+  labels:['Paid Social','Paid Search','Partner Mktg','Webinars','Live Events','Email Nurture'],
+  datasets:[{data:[68.8,55,50,36.4,29.4,22.2],backgroundColor:['#06C167','#06C167','#276EF1','#FF9500','#E11900','#E11900'],borderRadius:3}]
+},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+  x:{max:100,grid:{color:'#f0f0f0'},ticks:{font:{size:9},callback:v=>v+'%'}},
+  y:{grid:{display:false},ticks:{font:{size:9}}}
+}}});
+
+// C2 — Segment attainment (stacked bar)
+new Chart(document.getElementById('c2'),{type:'bar',data:{
+  labels:['Big','Medium','Small'],
+  datasets:[
+    {label:'Won ARR ($M)',data:[5.96,5.22,8.31],backgroundColor:'#06C167',borderRadius:3},
+    {label:'Remaining',  data:[94.04,44.78,21.69],backgroundColor:'#e5e5e5',borderRadius:0}
+  ]
+},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:9},boxWidth:10}}},scales:{
+  x:{stacked:true,grid:{display:false},ticks:{font:{size:9}}},
+  y:{stacked:true,grid:{color:'#f0f0f0'},ticks:{font:{size:9},callback:v=>'$'+v+'M'}}
+}}});
+
+// C3 — Region win rate (horizontal bar)
+new Chart(document.getElementById('c3'),{type:'bar',data:{
+  labels:['South','West','North','Central'],
+  datasets:[{data:[35.6,39.4,48.4,66.7],backgroundColor:['#E11900','#FF9500','#276EF1','#06C167'],borderRadius:3}]
+},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+  x:{max:100,grid:{color:'#f0f0f0'},ticks:{font:{size:9},callback:v=>v+'%'}},
+  y:{grid:{display:false},ticks:{font:{size:9}}}
+}}});
+
+// C4 — ARR/opp efficiency (horizontal bar)
+new Chart(document.getElementById('c4'),{type:'bar',data:{
+  labels:['Paid Search','Paid Social','Partner Mktg','Webinars','Live Events','Email Nurture'],
+  datasets:[{data:[73772,51939,47152,45469,35546,30717],backgroundColor:['#06C167','#06C167','#276EF1','#FF9500','#E11900','#E11900'],borderRadius:3}]
+},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+  x:{grid:{color:'#f0f0f0'},ticks:{font:{size:9},callback:v=>'$'+(v/1000).toFixed(0)+'K'}},
+  y:{grid:{display:false},ticks:{font:{size:9}}}
+}}});
+
+// C5 — Funnel stages (horizontal bar, late stages highlighted)
+new Chart(document.getElementById('c5'),{type:'bar',data:{
+  labels:['Final Decision','Negotiation/Rev.','Proposal/Quote','Qualification','Discovery'],
+  datasets:[{data:[21.5,25.6,19.6,23.2,22.0],backgroundColor:['#06C167','#0B847F','#d9d9d9','#d9d9d9','#d9d9d9'],borderRadius:3}]
+},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+  x:{grid:{color:'#f0f0f0'},ticks:{font:{size:9},callback:v=>'$'+v+'M'}},
+  y:{grid:{display:false},ticks:{font:{size:9}}}
+}}});
+
+// C6 — Recurring donut
+new Chart(document.getElementById('c6'),{type:'doughnut',data:{
+  labels:['Recurring (65%)','Non-Recurring (35%)'],
+  datasets:[{data:[12581758,6913281],backgroundColor:['#06C167','#e5e5e5'],borderWidth:2,borderColor:'#fff'}]
+},options:{responsive:true,maintainAspectRatio:false,cutout:'56%',plugins:{
+  legend:{display:true,position:'bottom',labels:{font:{size:9},boxWidth:10}},
+  tooltip:{callbacks:{label:c=>` ${c.label}: ${fmtS(c.raw)}`}}
+}}});
+
+/* ══ CHANNEL TABLE ══ */
+CH.forEach(c=>{
+  const tr=document.createElement('tr');
+  tr.onclick=()=>openModal('ch_'+c.n.replace(/\W/g,'_'));
+  tr.innerHTML=`<td class="td-bold">${c.n}</td><td class="td-mo">${c.t}</td>
+    <td class="td-mo td-g">${c.w}</td><td class="td-mo td-r">${c.l}</td>
+    <td><div class="wrb"><div class="wrb-track"><div class="wrb-fill" style="width:${c.wr}%;background:${wc(c.wr)}"></div></div><span class="wrb-lbl" style="color:${wc(c.wr)}">${c.wr}%</span></div></td>
+    <td class="td-mo">${fmtS(c.arr)}</td><td class="td-mo">${fmtS(c.avg)}</td>
+    <td class="td-mo" style="font-weight:700">${fmtS(c.eff)}</td>
+    <td><span class="tag ${wTag(c.wr)}">${wLbl(c.wr)}</span></td>`;
+  document.getElementById('chTbody').appendChild(tr);
+});
+
+/* ══ CHANNEL CHARTS (detail) ══ */
+new Chart(document.getElementById('chMain'),{type:'bar',data:{
+  labels:CH.map(c=>c.n),
+  datasets:[
+    {label:'Win Rate %',data:CH.map(c=>c.wr),backgroundColor:CH.map(c=>wc(c.wr)),borderRadius:4,yAxisID:'y',order:2},
+    {label:'ARR/Opp ($K)',data:CH.map(c=>+(c.eff/1000).toFixed(1)),type:'line',borderColor:'#1a1a1a',backgroundColor:'transparent',borderWidth:2,pointBackgroundColor:'#1a1a1a',pointRadius:4,yAxisID:'y2',order:1,tension:.3}
+  ]
+},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom'}},scales:{
+  y:{grid:{color:'#f0f0f0'},ticks:{font:{size:10},callback:v=>v+'%'},title:{display:true,text:'Win Rate %',font:{size:10}}},
+  y2:{position:'right',grid:{display:false},ticks:{font:{size:10},callback:v=>'$'+v+'K'},title:{display:true,text:'ARR/Opp ($K)',font:{size:10}}},
+  x:{grid:{display:false},ticks:{font:{size:9},maxRotation:30}}
+}}});
+
+new Chart(document.getElementById('chPie'),{type:'doughnut',data:{
+  labels:CH.map(c=>c.n),
+  datasets:[{data:CH.map(c=>c.arr),backgroundColor:['#06C167','#049A52','#0B847F','#276EF1','#4D9BE3','#FF9500','#E17200','#E11900'],borderWidth:2,borderColor:'#fff'}]
+},options:{responsive:true,maintainAspectRatio:false,cutout:'52%',plugins:{
+  legend:{display:true,position:'bottom',labels:{font:{size:10},padding:8}},
+  tooltip:{callbacks:{label:c=>` ${c.label}: ${fmtS(c.raw)}`}}
+}}});
+
+/* ══ SEGMENT CARDS ══ */
+SEG.forEach(s=>{
+  const pct=(s.wa/s.tgt*100).toFixed(1);
+  const color=s.cov>=1.5?'#06C167':s.cov>=0.7?'#FF9500':'#E11900';
+  const tc=s.cov>=1.5?'tg':s.cov>=0.7?'ta':'tr';
+  const div=document.createElement('div');
+  div.className='card';div.style.cursor='pointer';
+  div.onclick=()=>openModal('seg_'+s.n);
+  div.innerHTML=`
+    <div class="card-hd">
+      <div><div class="card-hd-title">${s.n} Segment</div><div class="card-hd-sub">Target: ${fmtS(s.tgt)}</div></div>
+      <span class="tag ${tc}">${s.cov}x coverage</span>
+    </div>
+    <div class="card-body">
+      <div class="seg-wrap">
+        <div class="seg-row"><b>Won ARR</b><span>${fmtS(s.wa)} of ${fmtS(s.tgt)}</span></div>
+        <div class="seg-track"><div class="seg-fill" style="width:${Math.min(pct,100)}%;background:${color}"></div></div>
+      </div>
+      <div class="seg-wrap" style="margin-bottom:0">
+        <div class="seg-row"><b>Pipeline vs. Gap</b><span>${fmtS(s.pipe)}</span></div>
+        <div class="seg-track"><div class="seg-fill" style="width:${Math.min(s.pipe/(s.tgt-s.wa)*100,100)}%;background:#276EF1;opacity:.65"></div></div>
+      </div>
+      <div class="sp-row">
+        <div class="sp"><div class="sp-val" style="color:${color};font-size:16px">${pct}%</div><div class="sp-lbl">Attainment</div></div>
+        <div class="sp"><div class="sp-val" style="font-size:16px">${s.wr}%</div><div class="sp-lbl">Win rate</div></div>
+        <div class="sp"><div class="sp-val" style="font-size:16px">${s.w}W / ${s.l}L</div><div class="sp-lbl">Closed</div></div>
+      </div>
+    </div>`;
+  document.getElementById('segCards').appendChild(div);
+});
+
+/* ══ SEGMENT CHART ══ */
+new Chart(document.getElementById('segChart'),{type:'bar',data:{
+  labels:['Big','Medium','Small'],
+  datasets:[
+    {label:'Won ARR',data:[5.96,5.22,8.31],backgroundColor:'#06C167',borderRadius:4},
+    {label:'Remaining to Target',data:[94.04,44.78,21.69],backgroundColor:'#e5e5e5',borderRadius:0}
+  ]
+},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom'}},scales:{
+  y:{stacked:true,grid:{color:'#f0f0f0'},ticks:{font:{size:10},callback:v=>'$'+v+'M'}},
+  x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}}
+}}});
+
+/* ══ REGION TABLE ══ */
+REG.forEach(r=>{
+  const tr=document.createElement('tr');
+  tr.onclick=()=>openModal('reg_'+r.n);
+  tr.innerHTML=`<td class="td-bold">${r.n}</td><td class="td-mo">${r.t}</td>
+    <td class="td-mo td-g">${r.w}</td><td class="td-mo td-r">${r.l}</td>
+    <td><div class="wrb"><div class="wrb-track"><div class="wrb-fill" style="width:${r.wr}%;background:${wc(r.wr)}"></div></div><span class="wrb-lbl" style="color:${wc(r.wr)}">${r.wr}%</span></div></td>
+    <td class="td-mo">${fmtS(r.wa)}</td><td class="td-mo">${fmtS(r.avg)}</td>
+    <td><span class="tag ${wTag(r.wr)}">${r.wr>=55?'LEADER':r.wr>=40?'SOLID':'DIAGNOSE'}</span></td>`;
+  document.getElementById('regTbody').appendChild(tr);
+});
+
+new Chart(document.getElementById('regChart'),{type:'bar',data:{
+  labels:['South','West','North','Central'],
+  datasets:[{data:[35.6,39.4,48.4,66.7],backgroundColor:['#E11900','#FF9500','#276EF1','#06C167'],borderRadius:4}]
+},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+  x:{max:100,grid:{color:'#f0f0f0'},ticks:{font:{size:10},callback:v=>v+'%'}},
+  y:{grid:{display:false},ticks:{font:{size:12,weight:'600'}}}
+}}});
+
+/* ══ FUNNEL ══ */
+const fmax=Math.max(...FUN.map(f=>f.arr));
+FUN.slice().reverse().forEach((f,i)=>{
+  const late=i<=1;
+  const color=late?'#0B847F':'#d9d9d9';
+  const pct=(f.arr/fmax*100).toFixed(0);
+  document.getElementById('funRows').innerHTML+=`
+    <div class="f-row">
+      <div class="f-stage">${f.s}</div>
+      <div class="f-track"><div class="f-fill" style="width:${pct}%;background:${color}"><span>${f.o} opps</span></div></div>
+      <div class="f-meta">${fmtS(f.arr)}</div>
+    </div>`;
+});
+
+new Chart(document.getElementById('funChart'),{type:'bar',data:{
+  labels:FUN.map(f=>f.s),
+  datasets:[{data:FUN.map(f=>+(f.arr/1e6).toFixed(1)),backgroundColor:FUN.map((_,i)=>i>=3?'#0B847F':'#d9d9d9'),borderRadius:4}]
+},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.raw}M — ${FUN[c.dataIndex].o} opps`}}},scales:{
+  y:{grid:{color:'#f0f0f0'},ticks:{font:{size:10},callback:v=>'$'+v+'M'}},
+  x:{grid:{display:false},ticks:{font:{size:9},maxRotation:20}}
+}}});
+
+/* ══ PRODUCTS ══ */
+new Chart(document.getElementById('prodWR'),{type:'bar',data:{
+  labels:PROD.map(p=>p.n),
+  datasets:[{data:PROD.map(p=>p.wr),backgroundColor:PROD.map(p=>wc(p.wr)),borderRadius:4}]
+},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+  y:{max:70,grid:{color:'#f0f0f0'},ticks:{font:{size:10},callback:v=>v+'%'}},
+  x:{grid:{display:false},ticks:{font:{size:9},maxRotation:20}}
+}}});
+
+new Chart(document.getElementById('prodARR'),{type:'bar',data:{
+  labels:PROD.map(p=>p.n),
+  datasets:[{data:PROD.map(p=>+(p.arr/1e6).toFixed(2)),backgroundColor:'#1a1a1a',borderRadius:4}]
+},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+  y:{grid:{color:'#f0f0f0'},ticks:{font:{size:10},callback:v=>'$'+v+'M'}},
+  x:{grid:{display:false},ticks:{font:{size:9},maxRotation:20}}
+}}});
+
+/* ══ MODALS ══ */
+const MODALS={
+  m1:{title:'01 · Channel Efficiency Gap Is Wide',body:`
+    <div class="sp-row">
+      <div class="sp"><div class="sp-val" style="color:#049A52">68.8%</div><div class="sp-lbl">Paid Social win rate</div></div>
+      <div class="sp"><div class="sp-val" style="color:#E11900">22.2%</div><div class="sp-lbl">Email Nurture win rate</div></div>
+      <div class="sp"><div class="sp-val">$73.8K</div><div class="sp-lbl">Paid Search ARR/opp</div></div>
+      <div class="sp"><div class="sp-val" style="color:#E11900">$30.7K</div><div class="sp-lbl">Email Nurture ARR/opp</div></div>
+    </div>
+    <h3>What the data shows</h3>
+    <p>Paid Social and Email Nurture generated nearly equal volume (60 vs 49 opps) but Paid Social produced 2.1x more won ARR ($3.1M vs $1.5M). Email Nurture had 14 losses — most of any channel — against just 4 wins.</p>
+    <p>On efficiency: Paid Search generates <strong>$73,772 won ARR per opp generated</strong> vs Email Nurture's $30,717. Moving 10 opps worth of budget from Email Nurture to Paid Search yields approximately <strong>$430K more won ARR per cycle</strong>.</p>
+    <h3>Cross-segment pattern</h3>
+    <p>Email Nurture underperforms in all three segments: Small 25%, Medium 14%, Big 33%. The 14% Medium win rate is particularly significant given Medium is already the weakest segment overall.</p>
+    <h3>Recommendation</h3>
+    <p>Reduce Email Nurture frequency 30–40%. Suppress lowest-engagement cohorts (no open in 90 days). Redirect budget toward Paid Social and Paid Search. Re-evaluate in 6 months with fresh data.</p>`},
+  m2:{title:'02 · Big Segment Severely Underpenetrated',body:`
+    <div class="sp-row">
+      <div class="sp"><div class="sp-val" style="color:#E11900">6%</div><div class="sp-lbl">Big attainment</div></div>
+      <div class="sp"><div class="sp-val" style="color:#049A52">50%</div><div class="sp-lbl">Big win rate (best segment)</div></div>
+      <div class="sp"><div class="sp-val" style="color:#E11900">0.40x</div><div class="sp-lbl">Pipeline coverage</div></div>
+      <div class="sp"><div class="sp-val">$200M</div><div class="sp-lbl">Pipeline needed to make target</div></div>
+    </div>
+    <h3>The math</h3>
+    <p>Big target: $100M. Won: $5.96M. Remaining: $94M. Current Big pipeline: $37.7M. At 50% win rate, that pipeline yields ~$18.9M — a $75M shortfall with no pipeline to back it up.</p>
+    <p>To make the $100M Big target at 50%, you need <strong>$200M of Big pipeline</strong>. You currently have 20% of that.</p>
+    <h3>Channel signal for Big</h3>
+    <p>Paid Search achieves <strong>80% win rate on Big deals</strong>. Paid Social also hits <strong>80% on Big</strong>. Partner Marketing reaches 75%. Organic/Direct achieves 0% on Big — not reaching enterprise decision-makers.</p>
+    <h3>Why win rate is not the story</h3>
+    <p>At 50%, Big looks like a success. But win rate only measures quality of what enters the funnel — not whether enough is entering. Big is a highly efficient factory running at 20% capacity. The fix is sourcing, not selling.</p>`},
+  m3:{title:'03 · South Region Losing at Highest Rate',body:`
+    <div class="sp-row">
+      <div class="sp"><div class="sp-val" style="color:#049A52">66.7%</div><div class="sp-lbl">Central win rate</div></div>
+      <div class="sp"><div class="sp-val" style="color:#E11900">35.6%</div><div class="sp-lbl">South win rate</div></div>
+      <div class="sp"><div class="sp-val">130</div><div class="sp-lbl">South total opps</div></div>
+      <div class="sp"><div class="sp-val" style="color:#E11900">29</div><div class="sp-lbl">South losses</div></div>
+    </div>
+    <h3>Channel mix explains the gap</h3>
+    <p>Central's top two channels: Partner Marketing (17 opps) and Paid Social (17 opps) — both high-converting. South's top two: Content Syndication (21 opps) and Email Nurture (21 opps). Email Nurture alone accounts for <strong>7 of South's 29 losses</strong>.</p>
+    <p>South's average won deal ($419K) is the <strong>highest of all regions</strong>. When South reps get good pipeline, they close it at premium prices. This is a pipeline quality problem, not a sales team problem.</p>
+    <table class="tbl" style="margin-top:12px">
+      <thead><tr><th>Region</th><th>Top Channels</th><th>Win Rate</th></tr></thead>
+      <tbody>
+        <tr><td class="td-bold td-g">Central</td><td>Partner Mktg, Paid Social</td><td class="td-g">66.7%</td></tr>
+        <tr><td class="td-bold">North</td><td>Webinars, Paid Social</td><td>48.4%</td></tr>
+        <tr><td class="td-bold td-a">West</td><td>Live Events, Webinars</td><td class="td-a">39.4%</td></tr>
+        <tr><td class="td-bold td-r">South</td><td>Content Synd., Email Nurture</td><td class="td-r">35.6%</td></tr>
+      </tbody>
+    </table>
+    <div class="callout co-i" style="margin-top:14px"><span>💡</span><p>Moving South to Central's channel mix — even partially — on 130 opps could yield 16+ additional wins and roughly $5.5M in additional won ARR.</p></div>`},
+  m4:{title:'04 · Webinars: Volume Without Conversion',body:`
+    <div class="sp-row">
+      <div class="sp"><div class="sp-val" style="color:#FF9500">69</div><div class="sp-lbl">Opps generated (most)</div></div>
+      <div class="sp"><div class="sp-val" style="color:#FF9500">36.4%</div><div class="sp-lbl">Win rate</div></div>
+      <div class="sp"><div class="sp-val" style="color:#E11900">14</div><div class="sp-lbl">Losses (tied most)</div></div>
+      <div class="sp"><div class="sp-val">$392K</div><div class="sp-lbl">Avg won deal</div></div>
+    </div>
+    <h3>The issue is lead readiness, not deal size</h3>
+    <p>Webinars generate the most raw volume of any channel but convert at only 36%. The average won Webinar deal ($392K) is above the dataset average ($348K), which means the target companies are the right size — attendees are just not yet in buying mode.</p>
+    <p>Compared to Paid Search: Webinars generate 35% more opps but 17% fewer wins, and produce $45K won ARR per opp vs. $74K for Paid Search.</p>
+    <h3>Proposed A/B test</h3>
+    <p>Add a 3-question pre-registration gate: job title and seniority, company size, primary use case. Block registrations below threshold. Run 2 gated vs. 2 ungated webinars over one quarter. Measure Stage 3+ progression rate within 60 days as primary signal — faster than waiting for win rate data.</p>`},
+  m5:{title:'05 · Late-Stage Pipeline Is Strong — Act Now',body:`
+    <div class="sp-row">
+      <div class="sp"><div class="sp-val" style="color:#0B847F">$47.2M</div><div class="sp-lbl">Stages 4–5 ARR</div></div>
+      <div class="sp"><div class="sp-val">128</div><div class="sp-lbl">Late-stage deals</div></div>
+      <div class="sp"><div class="sp-val">353d</div><div class="sp-lbl">Avg deal cycle</div></div>
+      <div class="sp"><div class="sp-val" style="color:#0B847F">~$21M</div><div class="sp-lbl">Projected closed won</div></div>
+    </div>
+    <h3>Why now</h3>
+    <p>At 353 average deal cycle days, deals created in H1 2025 are approaching projected close dates. Stage 4–5 is when buyers are most committed and slip risk is highest simultaneously. This is the right moment for executive involvement — not after a deal goes quiet.</p>
+    <h3>Top-20 focus</h3>
+    <p>Top 20 active deals by ARR represent approximately $14.4M — 12.8% of total pipeline. Executive sponsorship and weekly deal reviews on these 20 costs minimal resource and protects a disproportionate share of pipeline value. A 10% improvement in Stage 4–5 close rate adds roughly $4.7M to closed won.</p>
+    <h3>Funnel shape context</h3>
+    <p>Stage volume runs 51–71 opps per stage with no dramatic drop-off at any single transition. There is no one leaky stage — the funnel is healthy. Protecting late-stage deals is the highest near-term ROI action available.</p>`},
+  m6:{title:'06 · Recurring Revenue Is a Win-Rate Lever',body:`
+    <div class="sp-row">
+      <div class="sp"><div class="sp-val" style="color:#049A52">46.4%</div><div class="sp-lbl">Recurring win rate</div></div>
+      <div class="sp"><div class="sp-val">39.5%</div><div class="sp-lbl">Non-recurring win rate</div></div>
+      <div class="sp"><div class="sp-val" style="color:#049A52">64.5%</div><div class="sp-lbl">Recurring % of won ARR</div></div>
+      <div class="sp"><div class="sp-val">$407K</div><div class="sp-lbl">Avg non-recurring deal</div></div>
+    </div>
+    <h3>What the data shows</h3>
+    <p>Recurring deals close at 46.4% vs 39.5% non-recurring — a 6.9-point gap across 270 recurring and 155 non-recurring opportunities. The pattern holds across all three segments.</p>
+    <p>Non-recurring deals average a 26% larger contract ($407K vs $323K) but close less often. Buyers who agree to recurring terms appear to be further along in their decision at point of entry — the commitment has already been made internally.</p>
+    <h3>LTV implication</h3>
+    <p>Beyond win rate, recurring revenue has superior LTV characteristics. A $323K recurring contract over 3 years at 85% retention is worth significantly more than a $407K one-time deal. If LTV data were available, the recurring premium would be larger than the raw ARR numbers suggest.</p>
+    <div class="callout co-g" style="margin-top:14px"><span>✅</span><p><strong>Action:</strong> Coach reps to frame recurring as the default contract structure at discovery, especially for Big and Medium accounts. No budget required. Testable within one quarter.</p></div>`}
+};
+
+// Channel modals
+CH.forEach(c=>{
+  const k='ch_'+c.n.replace(/\W/g,'_');
+  MODALS[k]={title:c.n+' — Channel Deep Dive',body:`
+    <div class="sp-row">
+      <div class="sp"><div class="sp-val">${c.t}</div><div class="sp-lbl">Total opps</div></div>
+      <div class="sp"><div class="sp-val" style="color:#049A52">${c.w}</div><div class="sp-lbl">Won</div></div>
+      <div class="sp"><div class="sp-val" style="color:#E11900">${c.l}</div><div class="sp-lbl">Lost</div></div>
+      <div class="sp"><div class="sp-val" style="color:${wc(c.wr)}">${c.wr}%</div><div class="sp-lbl">Win rate</div></div>
+    </div>
+    <div class="sp-row">
+      <div class="sp"><div class="sp-val" style="font-size:15px">${fmtF(c.arr)}</div><div class="sp-lbl">Won ARR</div></div>
+      <div class="sp"><div class="sp-val" style="font-size:15px">${fmtF(c.avg)}</div><div class="sp-lbl">Avg won deal</div></div>
+      <div class="sp"><div class="sp-val" style="font-size:15px">${fmtF(c.eff)}</div><div class="sp-lbl">Won ARR per opp generated</div></div>
+    </div>
+    <h3>Performance vs. benchmarks</h3>
+    <p>Dataset average win rate: <strong>44.1%</strong>. ${c.n} is <strong style="color:${c.wr>44.1?'#049A52':'#E11900'}">${c.wr>44.1?'above':'below'}</strong> average at ${c.wr}%.</p>
+    <p>Dataset average ARR/opp: <strong>$47,392</strong>. ${c.n} efficiency: <strong style="color:${c.eff>47392?'#049A52':'#E11900'}">${c.eff>47392?'above':'below'}</strong> average at ${fmtF(c.eff)}/opp.</p>
+    <p>Signal: <span class="tag ${wTag(c.wr)}">${wLbl(c.wr)}</span></p>`};
+});
+
+// Segment modals
+SEG.forEach(s=>{
+  const k='seg_'+s.n;
+  const pct=(s.wa/s.tgt*100).toFixed(1);
+  const rem=s.tgt-s.wa;
+  const proj=Math.round(s.pipe*s.wr/100);
+  MODALS[k]={title:s.n+' Segment — Full Analysis',body:`
+    <div class="sp-row">
+      <div class="sp"><div class="sp-val">${fmtS(s.tgt)}</div><div class="sp-lbl">Annual target</div></div>
+      <div class="sp"><div class="sp-val" style="color:#049A52">${fmtS(s.wa)}</div><div class="sp-lbl">Won ARR</div></div>
+      <div class="sp"><div class="sp-val">${pct}%</div><div class="sp-lbl">Attainment</div></div>
+      <div class="sp"><div class="sp-val">${s.cov}x</div><div class="sp-lbl">Pipeline coverage</div></div>
+    </div>
+    <h3>Pipeline math</h3>
+    <p>Remaining to target: <strong>${fmtS(rem)}</strong>. Active pipeline: <strong>${fmtS(s.pipe)}</strong>. At ${s.wr}% win rate, active pipeline projects to <strong>${fmtS(proj)}</strong> in additional won ARR — leaving a gap of <strong>${fmtS(rem-proj)}</strong> with no pipeline behind it.</p>
+    <p>${s.w} won, ${s.l} lost, ${s.a} active. Win rate: ${s.wr}%.</p>
+    <div class="callout ${s.cov>=1.5?'co-g':s.cov>=0.7?'co-a':'co-r'}" style="margin-top:14px"><span>${s.cov>=1.5?'✅':s.cov<0.7?'🚨':'⚠️'}</span>
+    <p><strong>${s.cov>=1.5?'Pipeline adequate.':s.cov<0.7?'Critical pipeline deficit.':'Pipeline is thin.'}</strong> Coverage of ${s.cov}x ${s.cov>=1.5?'is above 1.0x minimum. Focus on win rate and deal protection.':s.cov<0.7?'means current pipeline cannot make target even at 100% win rate. Sourcing must increase immediately.':'is below the 3x benchmark typically needed for a healthy B2B pipeline.'}</p></div>`};
+});
+
+// Region modals
+REG.forEach(r=>{
+  const k='reg_'+r.n;
+  MODALS[k]={title:r.n+' Region — Analysis',body:`
+    <div class="sp-row">
+      <div class="sp"><div class="sp-val">${r.t}</div><div class="sp-lbl">Total opps</div></div>
+      <div class="sp"><div class="sp-val" style="color:${wc(r.wr)}">${r.wr}%</div><div class="sp-lbl">Win rate</div></div>
+      <div class="sp"><div class="sp-val">${fmtS(r.wa)}</div><div class="sp-lbl">Won ARR</div></div>
+      <div class="sp"><div class="sp-val">${fmtS(r.avg)}</div><div class="sp-lbl">Avg won deal</div></div>
+    </div>
+    <h3>Win / Loss</h3><p>${r.w} won, ${r.l} lost, ${r.a} active.</p>
+    <h3>Channel profile</h3>
+    <p><strong>Top channels by volume:</strong> ${r.topch}</p>
+    <p><strong>Top loss drivers:</strong> ${r.loss}</p>
+    <div class="callout ${r.wr>=55?'co-g':r.wr>=40?'co-i':'co-r'}" style="margin-top:14px"><span>${r.wr>=55?'✅':r.wr>=40?'💡':'🚨'}</span>
+    <p>${r.n==='Central'?'Central is the benchmark. Partner Marketing and Paid Social dominate — both high-converting. Replicate this mix in South and West.':r.n==='South'?'South is the highest-priority region to fix. Email Nurture drives 7 of 29 losses. Average won deal ($419K) is the highest of all regions. The fix is channel reallocation, not rep replacement.':r.n==='West'?'West underperforms at 39.4%. Live Events and Webinars dominate — both below-average converters. Shift toward Paid Search and Partner Marketing.':'North is solid at 48.4% but Webinars account for 5 losses. Reducing Webinar reliance and increasing Paid Social would likely push North toward 55%+'}</p></div>`};
+});
+
+function openModal(id){
+  const d=MODALS[id];if(!d)return;
+  document.getElementById('moTitle').textContent=d.title;
+  document.getElementById('moBody').innerHTML=d.body;
+  document.getElementById('moOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMo(){document.getElementById('moOverlay').classList.remove('open');document.body.style.overflow='';}
+function closeMoOutside(e){if(e.target===document.getElementById('moOverlay'))closeMo();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMo();});
+
+/* ── SCROLL ANIMS ── */
+const io=new IntersectionObserver(entries=>entries.forEach(e=>{
+  if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}
+}),{threshold:.05});
+document.querySelectorAll('.fu').forEach(el=>{
+  el.style.opacity='0';el.style.transform='translateY(16px)';
+  el.style.transition='opacity .45s ease, transform .45s ease';
+  io.observe(el);
+});
+</script>
+</body>
+</html>
