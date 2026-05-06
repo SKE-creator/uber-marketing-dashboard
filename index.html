@@ -6,7 +6,7 @@
 <title>Marketing Performance Insights — Uber for Business</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -18,28 +18,44 @@ html{scroll-behavior:smooth}
   --r:8px;
   --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
   --sh-lg:0 8px 28px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06);
-  --font-h:'Syne',sans-serif;
-  --font-b:'DM Sans',sans-serif;
+  --font:'Carlito','Calibri','Trebuchet MS',Arial,sans-serif;
 }
-body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6}
+body{font-family:var(--font);background:#f2f2f2;color:var(--ink);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6}
 
 /* ── TOPBAR ── */
 .topbar{background:var(--black);height:52px;display:flex;align-items:stretch;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.4)}
 .topbar-inner{max-width:1360px;margin:0 auto;width:100%;display:flex;align-items:stretch}
 .tb-brand{display:flex;align-items:center;gap:12px;padding:0 24px;border-right:1px solid #222;flex-shrink:0}
-.tb-wordmark{font-family:var(--font-h);font-weight:800;font-size:19px;color:var(--white);letter-spacing:-.3px}
+.tb-wordmark{font-family:var(--font);font-weight:700;font-size:19px;color:var(--white);letter-spacing:-.1px}
 .tb-sep{color:#444;font-size:17px}
-.tb-title{font-size:12.5px;font-weight:500;color:var(--g50)}
+.tb-title{font-size:12.5px;font-weight:400;color:var(--g50)}
 .tb-nav{display:flex;align-items:center;padding:0 12px;gap:2px;flex:1;overflow-x:auto}
-.tb-nav a{font-size:11.5px;font-weight:500;color:var(--g50);text-decoration:none;padding:5px 11px;border-radius:4px;white-space:nowrap;transition:color .15s,background .15s}
+.tb-nav a{font-size:12px;font-weight:400;color:var(--g50);text-decoration:none;padding:5px 11px;border-radius:4px;white-space:nowrap;transition:color .15s,background .15s}
 .tb-nav a:hover{color:var(--white);background:#1a1a1a}
 .tb-badge{display:flex;align-items:center;gap:7px;padding:0 20px;border-left:1px solid #222;flex-shrink:0}
 .tb-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s ease infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
 .tb-badge span{font-size:11px;color:var(--g50);white-space:nowrap}
 
+/* ── BLUF EXECUTIVE SUMMARY ── */
+.bluf{background:var(--white);border-bottom:2px solid var(--g07)}
+.bluf-inner{max-width:1360px;margin:0 auto;padding:28px 24px 24px;display:grid;grid-template-columns:1fr 360px;gap:40px;align-items:start}
+.bluf-label{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--green-d);display:block;margin-bottom:10px}
+.bluf-headline{font-family:var(--font);font-size:23px;font-weight:700;color:var(--black);line-height:1.25;letter-spacing:-.1px;margin-bottom:14px}
+.bluf-meta{display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--g07);border-radius:var(--r);overflow:hidden}
+.bluf-stat{flex:1;min-width:90px;padding:10px 16px;border-right:1px solid var(--g07);background:var(--g03)}
+.bluf-stat:last-child{border-right:none}
+.bluf-stat-val{font-family:var(--font);font-size:17px;font-weight:700;color:var(--black);line-height:1;margin-bottom:3px}
+.bluf-stat-lbl{font-size:10.5px;color:var(--g50)}
+.bluf-actions-hd{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g50);margin-bottom:12px}
+.bluf-action{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+.bluf-action:last-child{margin-bottom:0}
+.bluf-n{width:20px;height:20px;border-radius:50%;background:var(--black);color:var(--white);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.bluf-action-text{font-size:12.5px;color:var(--g70);line-height:1.55}
+.bluf-action-text strong{color:var(--ink);font-weight:700}
+
 /* ── LAYOUT ── */
-.page{max-width:1360px;margin:0 auto;padding:28px 20px 80px}
+.page{max-width:1360px;margin:0 auto;padding:32px 24px 80px}
 
 /* ── HERO / SLIDE REPLICA ── */
 .slide{
@@ -60,14 +76,14 @@ body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-
   display:flex;flex-direction:column;gap:0;
 }
 .ss-title{
-  font-family:var(--font-h);font-size:24px;font-weight:800;
-  color:var(--white);line-height:1.15;letter-spacing:-.5px;
+  font-family:var(--font);font-size:22px;font-weight:700;
+  color:var(--white);line-height:1.2;letter-spacing:-.1px;
   margin-bottom:14px;
 }
 .ss-rule{width:52px;height:3px;background:var(--green);border-radius:2px;margin-bottom:28px}
 .ss-kpi{background:#111;padding:14px 16px;margin-bottom:10px;border-left:3px solid var(--green)}
 .ss-kpi:last-child{margin-bottom:0}
-.ss-val{font-family:var(--font-h);font-size:26px;font-weight:800;color:var(--green);letter-spacing:-1px;line-height:1;margin-bottom:5px}
+.ss-val{font-family:var(--font);font-size:26px;font-weight:700;color:var(--green);letter-spacing:-.5px;line-height:1;margin-bottom:5px}
 .ss-label{font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px}
 .ss-sub{font-size:11px;color:var(--g50)}
 
@@ -79,13 +95,13 @@ body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-
   display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
 }
 .sh-left{}
-.sh-headline{font-family:var(--font-h);font-size:24px;font-weight:800;color:var(--black);line-height:1.2;letter-spacing:-.4px;margin-bottom:6px}
+.sh-headline{font-family:var(--font);font-size:22px;font-weight:700;color:var(--black);line-height:1.25;letter-spacing:-.1px;margin-bottom:6px}
 .sh-meta{font-size:12px;color:var(--g50);display:flex;gap:12px;flex-wrap:wrap}
 .sh-meta span{display:flex;align-items:center;gap:5px}
 .sh-meta span::before{content:'';display:inline-block;width:1px;height:10px;background:var(--g15)}
 .sh-meta span:first-child::before{display:none}
-.sh-uber{font-family:var(--font-h);font-size:19px;font-weight:800;color:var(--black);line-height:1.1;text-align:right;flex-shrink:0}
-.sh-uber-sub{font-size:14px;font-weight:400;color:var(--g70)}
+.sh-uber{font-family:var(--font);font-size:18px;font-weight:700;color:var(--black);line-height:1.1;text-align:right;flex-shrink:0}
+.sh-uber-sub{font-size:13px;font-weight:400;color:var(--g70)}
 
 /* Card grid */
 .card-grid{
@@ -108,14 +124,14 @@ body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-
 /* Card tag row */
 .ic-tag-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .ic-num{
-  font-size:10px;font-weight:800;
+  font-size:10px;font-weight:700;
   background:var(--green);color:var(--white);
   padding:2px 6px;border-radius:2px;letter-spacing:.5px;
 }
 .ic-tag{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g50)}
 
 /* Card title */
-.ic-title{font-family:var(--font-h);font-size:14.5px;font-weight:700;color:var(--black);line-height:1.25;margin-bottom:8px}
+.ic-title{font-family:var(--font);font-size:14px;font-weight:700;color:var(--black);line-height:1.3;margin-bottom:8px}
 
 /* Card body text */
 .ic-body{font-size:12px;color:var(--g70);line-height:1.6;margin-bottom:10px;flex-shrink:0}
@@ -133,13 +149,13 @@ body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-
 /* ── DETAIL SECTIONS ── */
 .section-hd{margin:40px 0 18px;padding-bottom:12px;border-bottom:2px solid var(--g07)}
 .section-hd-label{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--green-d);margin-bottom:4px}
-.section-hd h2{font-family:var(--font-h);font-size:19px;font-weight:800;color:var(--black);letter-spacing:-.3px}
+.section-hd h2{font-family:var(--font);font-size:19px;font-weight:700;color:var(--black);letter-spacing:-.1px}
 .section-hd p{font-size:12.5px;color:var(--g50);margin-top:3px}
 
 /* ── CARDS ── */
 .card{background:var(--white);border:1px solid var(--g07);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
 .card-hd{padding:15px 18px 12px;border-bottom:1px solid var(--g07);display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-.card-hd-title{font-family:var(--font-h);font-size:13.5px;font-weight:700;color:var(--black)}
+.card-hd-title{font-family:var(--font);font-size:13.5px;font-weight:700;color:var(--black)}
 .card-hd-sub{font-size:11px;color:var(--g50);margin-top:2px}
 .card-body{padding:18px}
 .card-body.nopad{padding:0}
@@ -157,10 +173,10 @@ body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-
 .tbl tbody tr{border-bottom:1px solid var(--g07);transition:background .1s;cursor:pointer}
 .tbl tbody tr:hover{background:var(--g03)}
 .tbl tbody td{padding:10px 13px;color:var(--g70)}
-.td-bold{font-weight:600;color:var(--ink)}
+.td-bold{font-weight:700;color:var(--ink)}
 .td-g{color:var(--green-d);font-weight:700}
-.td-r{color:var(--red);font-weight:600}
-.td-a{color:#b36b00;font-weight:600}
+.td-r{color:var(--red);font-weight:700}
+.td-a{color:#b36b00;font-weight:700}
 .td-mo{font-size:12px;letter-spacing:.1px}
 
 /* ── WIN RATE BAR ── */
@@ -181,7 +197,7 @@ body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-
 /* ── STAT PILLS ── */
 .sp-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 0}
 .sp{background:var(--g03);border:1px solid var(--g07);border-radius:6px;padding:10px 13px;flex:1;min-width:90px}
-.sp-val{font-family:var(--font-h);font-size:18px;font-weight:800;color:var(--black);letter-spacing:-.5px;line-height:1}
+.sp-val{font-family:var(--font);font-size:18px;font-weight:700;color:var(--black);letter-spacing:-.2px;line-height:1}
 .sp-lbl{font-size:10.5px;color:var(--g50);margin-top:3px}
 
 /* ── SEG BARS ── */
@@ -195,14 +211,14 @@ body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-
 /* ── FUNNEL ROWS ── */
 .f-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--g07)}
 .f-row:last-child{border:none}
-.f-stage{font-size:11.5px;font-weight:600;color:var(--ink);min-width:120px}
+.f-stage{font-size:11.5px;font-weight:700;color:var(--ink);min-width:130px}
 .f-track{flex:1;height:26px;background:var(--g07);border-radius:3px;overflow:hidden;position:relative}
 .f-fill{height:26px;border-radius:3px;display:flex;align-items:center;padding:0 8px}
 .f-fill span{font-size:10.5px;font-weight:700;color:var(--white)}
 .f-meta{min-width:68px;text-align:right;font-size:11.5px;color:var(--g50)}
 
 /* ── CALLOUT ── */
-.callout{border-radius:var(--r);padding:12px 16px;font-size:12.5px;line-height:1.65;display:flex;gap:10px;margin-top:14px;border:1px solid transparent}
+.callout{border-radius:var(--r);padding:14px 18px;font-size:13px;line-height:1.65;display:flex;gap:12px;margin-top:14px;border:1px solid transparent}
 .callout p{color:var(--g70)}
 .callout strong{color:var(--ink)}
 .co-g{background:rgba(6,193,103,.08);border-color:rgba(6,193,103,.2)}
@@ -211,10 +227,10 @@ body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-
 .co-i{background:#eef3fd;border-color:#c2d4fb}
 
 /* ── REC CARD ── */
-.rec{background:var(--white);border:1px solid var(--g07);border-radius:var(--r);padding:18px 20px;display:flex;gap:14px;box-shadow:var(--sh)}
-.rec-n{width:30px;height:30px;border-radius:50%;background:var(--black);color:var(--white);font-family:var(--font-h);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.rec-h{font-family:var(--font-h);font-size:13.5px;font-weight:700;color:var(--black);margin-bottom:5px}
-.rec-p{font-size:12.5px;color:var(--g70);line-height:1.65}
+.rec{background:var(--white);border:1px solid var(--g07);border-radius:var(--r);padding:20px 22px;display:flex;gap:16px;box-shadow:var(--sh)}
+.rec-n{width:30px;height:30px;border-radius:50%;background:var(--black);color:var(--white);font-family:var(--font);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rec-h{font-family:var(--font);font-size:14px;font-weight:700;color:var(--black);margin-bottom:6px}
+.rec-p{font-size:13px;color:var(--g70);line-height:1.65}
 .rec-p b{color:var(--ink)}
 
 /* ── MODAL ── */
@@ -223,11 +239,11 @@ body{font-family:var(--font-b);background:#f2f2f2;color:var(--ink);-webkit-font-
 .mo-box{background:var(--white);border-radius:12px;box-shadow:var(--sh-lg);width:min(700px,93vw);max-height:87vh;overflow-y:auto;transform:translateY(14px);transition:transform .2s;position:relative}
 .mo.open .mo-box{transform:translateY(0)}
 .mo-hd{padding:22px 26px 16px;border-bottom:1px solid var(--g07);display:flex;align-items:flex-start;justify-content:space-between;gap:14px;position:sticky;top:0;background:var(--white);z-index:1}
-.mo-hd h2{font-family:var(--font-h);font-size:17px;font-weight:800;color:var(--black);line-height:1.2}
+.mo-hd h2{font-family:var(--font);font-size:17px;font-weight:700;color:var(--black);line-height:1.2}
 .mo-close{background:none;border:none;cursor:pointer;font-size:19px;color:var(--g50);padding:4px;border-radius:4px;transition:background .1s}
 .mo-close:hover{background:var(--g07)}
 .mo-body{padding:22px 26px 26px}
-.mo-body h3{font-family:var(--font-h);font-size:13px;font-weight:700;color:var(--black);margin:18px 0 8px}
+.mo-body h3{font-family:var(--font);font-size:13px;font-weight:700;color:var(--black);margin:18px 0 8px}
 .mo-body h3:first-child{margin-top:0}
 .mo-body p{font-size:13px;color:var(--g70);line-height:1.7;margin-bottom:9px}
 .mo-body ul{padding-left:17px;margin-bottom:10px}
@@ -255,6 +271,9 @@ footer strong{color:var(--g30)}
   .tb-nav{display:none}
   .insight-card{border-right:none!important}
   .insight-card:nth-child(1),.insight-card:nth-child(2),.insight-card:nth-child(3),.insight-card:nth-child(4),.insight-card:nth-child(5){border-bottom:1px solid var(--g07)!important}
+  .bluf-inner{grid-template-columns:1fr;gap:24px}
+  .bluf-meta{flex-wrap:wrap}
+  .bluf-stat{min-width:calc(50% - 1px)}
 }
 </style>
 </head>
@@ -283,6 +302,30 @@ footer strong{color:var(--g30)}
     </div>
   </div>
 </header>
+
+<!-- BLUF EXECUTIVE SUMMARY -->
+<div class="bluf">
+  <div class="bluf-inner">
+    <div>
+      <span class="bluf-label">Bottom Line</span>
+      <h1 class="bluf-headline">Pipeline is Healthy &mdash; Segment Mix and Channel Waste<br>Are Leaving Revenue Behind</h1>
+      <div class="bluf-meta">
+        <div class="bluf-stat"><div class="bluf-stat-val">425</div><div class="bluf-stat-lbl">Total Opportunities</div></div>
+        <div class="bluf-stat"><div class="bluf-stat-val">$19.5M</div><div class="bluf-stat-lbl">Won ARR</div></div>
+        <div class="bluf-stat"><div class="bluf-stat-val">$112.0M</div><div class="bluf-stat-lbl">Active Pipeline</div></div>
+        <div class="bluf-stat"><div class="bluf-stat-val">44%</div><div class="bluf-stat-lbl">Overall Win Rate</div></div>
+        <div class="bluf-stat"><div class="bluf-stat-val">353d</div><div class="bluf-stat-lbl">Avg Deal Cycle</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="bluf-actions-hd">Priority Actions</div>
+      <div class="bluf-action"><div class="bluf-n">1</div><div class="bluf-action-text"><strong>Launch Big-segment ABM</strong> &mdash; 50% win rate (best in data), 0.40x pipeline coverage; $200M needed vs. $37.7M in hand</div></div>
+      <div class="bluf-action"><div class="bluf-n">2</div><div class="bluf-action-text"><strong>Reallocate Email Nurture budget</strong> &mdash; 22% win rate vs. 55%&ndash;69% for Paid Search &amp; Social; +$430K ARR per reallocation cycle</div></div>
+      <div class="bluf-action"><div class="bluf-n">3</div><div class="bluf-action-text"><strong>Gate Webinar registrations</strong> &mdash; most opps (69), 36% win rate; constraint is lead readiness, not deal size ($392K avg)</div></div>
+      <div class="bluf-action"><div class="bluf-n">4</div><div class="bluf-action-text"><strong>Exec-sponsor Stage 4&ndash;5 deals</strong> &mdash; $47M at peak slip risk; 10-point close rate lift = +$4.7M won ARR</div></div>
+    </div>
+  </div>
+</div>
 
 <main class="page">
 
@@ -532,7 +575,7 @@ footer strong{color:var(--g30)}
     <div class="section-hd-label">Recommendations</div>
     <h2>4 Prioritized Actions with Evidence</h2>
   </div>
-  <div style="display:flex;flex-direction:column;gap:12px" class="fu d1">
+  <div style="display:flex;flex-direction:column;gap:14px" class="fu d1">
     <div class="rec">
       <div class="rec-n">1</div>
       <div>
@@ -540,7 +583,7 @@ footer strong{color:var(--g30)}
         <p class="rec-p"><b>Evidence:</b> Big win rate = 50%, best in dataset. Big pipeline coverage = 0.40x. At 50% you need $200M of Big pipeline to make the $100M target. You have $37.7M. Paid Search and Paid Social both achieve 80% win rate on Big deals.<br>
         <b>Action:</b> Identify top 25 Big ICP accounts. Run Paid Search and Paid Social campaigns targeting those accounts. Assign dedicated AEs. Set a quarterly Big pipeline creation KPI of $20–25M.<br>
         <b>Metric:</b> New Big pipeline created per month.</p>
-        <div style="margin-top:8px"><span class="tag tr">HIGH IMPACT</span></div>
+        <div style="margin-top:10px"><span class="tag tr">HIGH IMPACT</span></div>
       </div>
     </div>
     <div class="rec">
@@ -550,7 +593,7 @@ footer strong{color:var(--g30)}
         <p class="rec-p"><b>Evidence:</b> Email Nurture generates $31K won ARR per opp vs. $74K for Paid Search. Email Nurture has 14 losses — most of any channel — with 4 wins. Moving 10 opps worth of investment to Paid Search yields roughly $430K more won ARR per cycle.<br>
         <b>Action:</b> Reduce Email Nurture send frequency. Suppress lowest-engagement cohorts. Redirect paid budget to Paid Search and Paid Social with Big-segment targeting.<br>
         <b>Metric:</b> Channel-level ARR per opp, tracked monthly. Evaluate 90 days post-reallocation.</p>
-        <div style="margin-top:8px"><span class="tag ta">MEDIUM-HIGH IMPACT</span></div>
+        <div style="margin-top:10px"><span class="tag ta">MEDIUM-HIGH IMPACT</span></div>
       </div>
     </div>
     <div class="rec">
@@ -560,7 +603,7 @@ footer strong{color:var(--g30)}
         <p class="rec-p"><b>Evidence:</b> Webinars: 69 opps, 36% win rate, 14 losses. Average won Webinar deal is $392K — the issue is lead readiness, not deal size. A 3-question intent screen (role, company size, use case) would likely reduce registrations 20–30% but lift pipeline quality 10–15 points.<br>
         <b>Action:</b> Run 2 gated vs. 2 ungated webinars over one quarter. Measure Stage 3+ progression rate within 60 days as the primary signal (faster than win rate).<br>
         <b>Metric:</b> Stage 3+ progression rate by cohort.</p>
-        <div style="margin-top:8px"><span class="tag tb2">MEDIUM IMPACT &middot; TESTABLE</span></div>
+        <div style="margin-top:10px"><span class="tag tb2">MEDIUM IMPACT &middot; TESTABLE</span></div>
       </div>
     </div>
     <div class="rec">
@@ -570,7 +613,7 @@ footer strong{color:var(--g30)}
         <p class="rec-p"><b>Evidence:</b> $47M sits in Stages 4–5. Top 20 active deals by ARR represent ~$14.4M. Average deal cycle is 353 days — this cohort is at peak slip risk. A 10% improvement in Stage 4–5 close rate adds ~$4.7M to closed won.<br>
         <b>Action:</b> Pull Stage 4–5 deals over $400K from Salesforce. Assign an exec sponsor to each. Run weekly deal reviews. Fast-track legal and procurement support where applicable.<br>
         <b>Metric:</b> Stage 4–5 close rate and deal slippage rate vs. historical. 60–90 day window.</p>
-        <div style="margin-top:8px"><span class="tag ttl">HIGH IMPACT &middot; NEAR-TERM</span></div>
+        <div style="margin-top:10px"><span class="tag ttl">HIGH IMPACT &middot; NEAR-TERM</span></div>
       </div>
     </div>
   </div>
@@ -586,19 +629,19 @@ footer strong{color:var(--g30)}
     <div class="card">
       <div class="card-hd"><div class="card-hd-title">Key Definitions</div></div>
       <div class="card-body">
-        <p style="font-size:12.5px;color:var(--g70);margin-bottom:10px"><strong style="color:var(--ink)">Win Rate:</strong> Won &divide; (Won + Lost). Active pipeline excluded. Standard CRM definition — most accurate read on completed sales cycles.</p>
-        <p style="font-size:12.5px;color:var(--g70);margin-bottom:10px"><strong style="color:var(--ink)">ARR Efficiency:</strong> Won ARR &divide; Total Opps Generated by channel, including active and lost. Captures the true cost of pipeline generation, not just closed deals.</p>
-        <p style="font-size:12.5px;color:var(--g70);margin-bottom:10px"><strong style="color:var(--ink)">Pipeline Coverage:</strong> Active Pipeline ARR &divide; Remaining ARR to Target. 3x is the healthy B2B SaaS benchmark. Below 1x is structurally insufficient.</p>
-        <p style="font-size:12.5px;color:var(--g70)"><strong style="color:var(--ink)">Deal Cycle:</strong> Created Date to Close Date. Won = actual. Active = projected. Overall average: 353 days.</p>
+        <p style="font-size:13px;color:var(--g70);margin-bottom:12px"><strong style="color:var(--ink)">Win Rate:</strong> Won &divide; (Won + Lost). Active pipeline excluded. Standard CRM definition — most accurate read on completed sales cycles.</p>
+        <p style="font-size:13px;color:var(--g70);margin-bottom:12px"><strong style="color:var(--ink)">ARR Efficiency:</strong> Won ARR &divide; Total Opps Generated by channel, including active and lost. Captures the true cost of pipeline generation, not just closed deals.</p>
+        <p style="font-size:13px;color:var(--g70);margin-bottom:12px"><strong style="color:var(--ink)">Pipeline Coverage:</strong> Active Pipeline ARR &divide; Remaining ARR to Target. 3x is the healthy B2B SaaS benchmark. Below 1x is structurally insufficient.</p>
+        <p style="font-size:13px;color:var(--g70)"><strong style="color:var(--ink)">Deal Cycle:</strong> Created Date to Close Date. Won = actual. Active = projected. Overall average: 353 days.</p>
       </div>
     </div>
     <div class="card">
       <div class="card-hd"><div class="card-hd-title">Important Caveats</div></div>
       <div class="card-body">
-        <p style="font-size:12.5px;color:var(--g70);margin-bottom:9px">📊 <strong style="color:var(--ink)">Sample sizes:</strong> Channel win rates are based on 9–22 closed deals. Directional confidence is high for 40+ point gaps; formal significance requires 3–4x more observations.</p>
-        <p style="font-size:12.5px;color:var(--g70);margin-bottom:9px">🔗 <strong style="color:var(--ink)">Single-touch attribution:</strong> One lead source per opportunity. Multi-touch modeling would change channel rankings.</p>
-        <p style="font-size:12.5px;color:var(--g70);margin-bottom:9px">💰 <strong style="color:var(--ink)">No spend data:</strong> ARR per opp is a proxy for efficiency. True ROAS and CAC require budget data not in this dataset.</p>
-        <p style="font-size:12.5px;color:var(--g70)">🧪 <strong style="color:var(--ink)">Synthetic dataset:</strong> Directionally realistic by design. Real-world data would include missing values, duplicate opportunities, and multi-year history.</p>
+        <p style="font-size:13px;color:var(--g70);margin-bottom:10px">📊 <strong style="color:var(--ink)">Sample sizes:</strong> Channel win rates are based on 9–22 closed deals. Directional confidence is high for 40+ point gaps; formal significance requires 3–4x more observations.</p>
+        <p style="font-size:13px;color:var(--g70);margin-bottom:10px">🔗 <strong style="color:var(--ink)">Single-touch attribution:</strong> One lead source per opportunity. Multi-touch modeling would change channel rankings.</p>
+        <p style="font-size:13px;color:var(--g70);margin-bottom:10px">💰 <strong style="color:var(--ink)">No spend data:</strong> ARR per opp is a proxy for efficiency. True ROAS and CAC require budget data not in this dataset.</p>
+        <p style="font-size:13px;color:var(--g70)">🧪 <strong style="color:var(--ink)">Synthetic dataset:</strong> Directionally realistic by design. Real-world data would include missing values, duplicate opportunities, and multi-year history.</p>
       </div>
     </div>
   </div>
@@ -663,10 +706,10 @@ const PROD=[
 /* ══ HELPERS ══ */
 const fmtS=n=>n>=1e6?'$'+(n/1e6).toFixed(1)+'M':'$'+(n/1e3).toFixed(0)+'K';
 const fmtF=n=>'$'+n.toLocaleString();
-const wc=r=>r>=55?'#06C167':r>=40?'#276EF1':r>=30?'#FF9500':'#E11900';
-const wTag=r=>r>=55?'tg':r>=40?'tb2':r>=30?'ta':'tr';
+const wc=r=>r>=55?'#06C167':r>=30?'#FF9500':'#E11900';
+const wTag=r=>r>=55?'tg':r>=30?'ta':'tr';
 const wLbl=r=>r>=55?'SCALE':r>=40?'MAINTAIN':r>=30?'OPTIMIZE':'DIAGNOSE';
-Chart.defaults.font.family="'DM Sans',sans-serif";
+Chart.defaults.font.family="'Carlito','Calibri','Trebuchet MS',sans-serif";
 Chart.defaults.color='#808080';
 Chart.defaults.plugins.legend.labels.boxWidth=12;
 
@@ -676,7 +719,7 @@ const cOpts=(extra={})=>({responsive:true,maintainAspectRatio:false,plugins:{leg
 // C1 — Channel win rate (horizontal bar, 6 key channels)
 new Chart(document.getElementById('c1'),{type:'bar',data:{
   labels:['Paid Social','Paid Search','Partner Mktg','Webinars','Live Events','Email Nurture'],
-  datasets:[{data:[68.8,55,50,36.4,29.4,22.2],backgroundColor:['#06C167','#06C167','#276EF1','#FF9500','#E11900','#E11900'],borderRadius:3}]
+  datasets:[{data:[68.8,55,50,36.4,29.4,22.2],backgroundColor:['#06C167','#06C167','#FF9500','#FF9500','#E11900','#E11900'],borderRadius:3}]
 },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
   x:{max:100,grid:{color:'#f0f0f0'},ticks:{font:{size:9},callback:v=>v+'%'}},
   y:{grid:{display:false},ticks:{font:{size:9}}}
@@ -697,7 +740,7 @@ new Chart(document.getElementById('c2'),{type:'bar',data:{
 // C3 — Region win rate (horizontal bar)
 new Chart(document.getElementById('c3'),{type:'bar',data:{
   labels:['South','West','North','Central'],
-  datasets:[{data:[35.6,39.4,48.4,66.7],backgroundColor:['#E11900','#FF9500','#276EF1','#06C167'],borderRadius:3}]
+  datasets:[{data:[35.6,39.4,48.4,66.7],backgroundColor:['#E11900','#FF9500','#FF9500','#06C167'],borderRadius:3}]
 },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
   x:{max:100,grid:{color:'#f0f0f0'},ticks:{font:{size:9},callback:v=>v+'%'}},
   y:{grid:{display:false},ticks:{font:{size:9}}}
@@ -706,7 +749,7 @@ new Chart(document.getElementById('c3'),{type:'bar',data:{
 // C4 — ARR/opp efficiency (horizontal bar)
 new Chart(document.getElementById('c4'),{type:'bar',data:{
   labels:['Paid Search','Paid Social','Partner Mktg','Webinars','Live Events','Email Nurture'],
-  datasets:[{data:[73772,51939,47152,45469,35546,30717],backgroundColor:['#06C167','#06C167','#276EF1','#FF9500','#E11900','#E11900'],borderRadius:3}]
+  datasets:[{data:[73772,51939,47152,45469,35546,30717],backgroundColor:['#06C167','#06C167','#FF9500','#FF9500','#E11900','#E11900'],borderRadius:3}]
 },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
   x:{grid:{color:'#f0f0f0'},ticks:{font:{size:9},callback:v=>'$'+(v/1000).toFixed(0)+'K'}},
   y:{grid:{display:false},ticks:{font:{size:9}}}
@@ -804,7 +847,7 @@ new Chart(document.getElementById('segChart'),{type:'bar',data:{
   ]
 },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom'}},scales:{
   y:{stacked:true,grid:{color:'#f0f0f0'},ticks:{font:{size:10},callback:v=>'$'+v+'M'}},
-  x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}}
+  x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'700'}}}
 }}});
 
 /* ══ REGION TABLE ══ */
@@ -821,10 +864,10 @@ REG.forEach(r=>{
 
 new Chart(document.getElementById('regChart'),{type:'bar',data:{
   labels:['South','West','North','Central'],
-  datasets:[{data:[35.6,39.4,48.4,66.7],backgroundColor:['#E11900','#FF9500','#276EF1','#06C167'],borderRadius:4}]
+  datasets:[{data:[35.6,39.4,48.4,66.7],backgroundColor:['#E11900','#FF9500','#FF9500','#06C167'],borderRadius:4}]
 },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
   x:{max:100,grid:{color:'#f0f0f0'},ticks:{font:{size:10},callback:v=>v+'%'}},
-  y:{grid:{display:false},ticks:{font:{size:12,weight:'600'}}}
+  y:{grid:{display:false},ticks:{font:{size:12,weight:'700'}}}
 }}});
 
 /* ══ FUNNEL ══ */
